@@ -1,7 +1,7 @@
 
 import { useEffect, useRef } from "react";
 import Webcam from "react-webcam";
-
+import DriverHealthMonitoring from "./DriverHealthMonitoring";
 import {
   FaceMesh,
   FACEMESH_CONTOURS,
@@ -84,7 +84,7 @@ useEffect(() => {
   };
 }, []);
 
-  return (
+  return (<>
     <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-xl border border-slate-200 dark:border-slate-800">
       <div className="flex items-center justify-between mb-4">
         <div>
@@ -147,5 +147,7 @@ useEffect(() => {
         </div>
       </div>
     </div>
+    <DriverHealthMonitoring />
+    </>
   );
 }

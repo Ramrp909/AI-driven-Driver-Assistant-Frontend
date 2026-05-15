@@ -165,7 +165,7 @@ export default function App() {
                 ) : (
                   // Compact Mode - Priority Layout
                   <div className="space-y-6">
-                    <DriverHealthMonitoring />
+                    {/* <DriverHealthMonitoring /> */}
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                       <div className="lg:col-span-2">
@@ -180,7 +180,7 @@ export default function App() {
               </section>
 
               {/* Driver Health Monitoring - Below Driver Monitor in Default Mode */}
-              {!isMonitorCompact && <DriverHealthMonitoring />}
+              {/* {!isMonitorCompact && <DriverHealthMonitoring />} */}
 
               {/* Driver Profile Management */}
               <section id="settings" className="scroll-mt-20">

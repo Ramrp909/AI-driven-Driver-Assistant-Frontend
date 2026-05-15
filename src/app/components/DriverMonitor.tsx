@@ -16,8 +16,19 @@ export default function DriverMonitor({ isCompact = false, onToggleCompact }: Dr
   const [faceCount, setFaceCount] = useState(0);
   const [isScanning, setIsScanning] = useState(false);
   const [isDrowsy, setIsDrowsy] = useState(false);
+  const previousDrowsyRef = useRef(false);
   const [showDangerAlert, setShowDangerAlert] = useState(false);
 const [attentionStatus, setAttentionStatus] = useState("Focused");
+
+const speakAlert = (message: string) => {
+  const speech = new SpeechSynthesisUtterance(message);
+
+  speech.volume = 1;
+  speech.rate = 0.9;
+  speech.pitch = 0.8;
+
+  window.speechSynthesis.speak(speech);
+};
 
   // const statusCards = [
   //   { label: "AI Status", value: "Active", color: "green", icon: Target },
@@ -128,6 +139,18 @@ const colorClasses = {
       }
     };
 
+  const triggerDangerAlert = () => {
+  setShowDangerAlert(true);
+
+  speakAlert(
+    "Warning. Driver drowsiness detected. Please stay alert."
+  );
+
+  setTimeout(() => {
+    setShowDangerAlert(false);
+  }, 5000);
+};
+
   useEffect(() => {
     const interval = setInterval(() => {
         detectFace();
@@ -136,19 +159,30 @@ const colorClasses = {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-  if (isDrowsy) {
-    setShowDangerAlert(true);
+//   useEffect(() => {
+//   if (isDrowsy) {
+//     setShowDangerAlert(true);
 
-    const timeout = setTimeout(() => {
-      setShowDangerAlert(false);
+//     const timeout = setTimeout(() => {
+//       setShowDangerAlert(false);
 
-      // Reset drowsy state after popup closes
-      setIsDrowsy(false);
-    }, 5000);
+//       // Reset drowsy state after popup closes
+//       setIsDrowsy(false);
+//     }, 5000);
 
-    return () => clearTimeout(timeout);
+//     return () => clearTimeout(timeout);
+//   }
+// }, [isDrowsy]);
+
+useEffect(() => {
+  if (
+    isDrowsy &&
+    !previousDrowsyRef.current
+  ) {
+    triggerDangerAlert();
   }
+
+  previousDrowsyRef.current = isDrowsy;
 }, [isDrowsy]);
 
 
