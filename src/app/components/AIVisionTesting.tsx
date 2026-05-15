@@ -8,9 +8,38 @@ import {
   FACEMESH_TESSELATION,
 } from "@mediapipe/face_mesh";
 
+import axios from "axios";
+
 import { drawConnectors } from "@mediapipe/drawing_utils";
+import { useAI } from "../../context/AIContext";
+
+
+
+
+const DebugCard = ({
+  label,
+  value,
+}: {
+  label: string;
+  value: any;
+}) => (
+  <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
+    <p className="text-sm text-slate-500 dark:text-slate-400">
+      {label}
+    </p>
+
+    <p className="text-lg font-semibold text-cyan-500 mt-2">
+      {value}
+    </p>
+  </div>
+);
 
 export default function AIVisionTesting() {
+ 
+  const {
+  telemetry,
+  setTelemetry,
+} = useAI();
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -79,8 +108,70 @@ useEffect(() => {
     }
   }, 300);
 
+  const backendInterval = setInterval(
+  async () => {
+    const video =
+      webcamRef.current?.video;
+
+    if (
+      video &&
+      video.readyState === 4
+    ) {
+      const canvas =
+        document.createElement("canvas");
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      const ctx =
+        canvas.getContext("2d");
+
+      if (!ctx) return;
+
+      ctx.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+      canvas.toBlob(
+        async (blob) => {
+          if (!blob) return;
+
+          const formData =
+            new FormData();
+
+          formData.append(
+            "file",
+            blob,
+            "frame.jpg"
+          );
+
+          try {
+            const response =
+              await axios.post(
+                "http://127.0.0.1:8000/detect-face",
+                formData
+              );
+
+            setTelemetry(
+              response.data
+            );
+          } catch (error) {
+            console.error(error);
+          }
+        },
+        "image/jpeg"
+      );
+    }
+  },
+  500
+);
   return () => {
     clearInterval(interval);
+    clearInterval(backendInterval);
   };
 }, []);
 
@@ -102,7 +193,7 @@ useEffect(() => {
         </div>
       </div>
 
-      <div className="relative rounded-2xl overflow-hidden aspect-video bg-black">
+      {/* <div className="relative rounded-2xl overflow-hidden aspect-video bg-black">
         <Webcam
           ref={webcamRef}
           audio={false}
@@ -115,9 +206,9 @@ useEffect(() => {
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
         />
-      </div>
+      </div> */}
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+      {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
         <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl p-4">
           <p className="text-sm text-slate-500">Face Mesh</p>
           <p className="text-lg font-semibold text-cyan-500">
@@ -145,7 +236,186 @@ useEffect(() => {
             12ms
           </p>
         </div>
-      </div>
+      </div> */}
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+  {/* Webcam Section */}
+  <div className="lg:col-span-2">
+    <div className="relative rounded-2xl overflow-hidden bg-black h-[350px]">
+      
+      <Webcam
+        ref={webcamRef}
+        audio={false}
+        mirrored={true}
+        screenshotFormat="image/jpeg"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full"
+      />
+    </div>
+  </div>
+
+  {/* Live Status Section */}
+  <div className="space-y-4">
+
+    <DebugCard
+      label="Attention"
+      value={
+        telemetry?.attentionStatus ??
+        "N/A"
+      }
+    />
+
+    <DebugCard
+      label="Attention Score"
+      value={
+        telemetry?.attentionScore ??
+        0
+      }
+    />
+
+    <DebugCard
+      label="Head Direction"
+      value={
+        telemetry?.headDirection ??
+        "Center"
+      }
+    />
+
+    <DebugCard
+      label="Drowsy"
+      value={
+        telemetry?.isDrowsy
+          ? "Yes"
+          : "No"
+      }
+    />
+
+  </div>
+</div>
+
+<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+
+  <DebugCard
+    label="Face Detected"
+    value={
+      telemetry?.faceDetected
+        ? "Yes"
+        : "No"
+    }
+  />
+
+  <DebugCard
+    label="Face Count"
+    value={telemetry?.faceCount ?? 0}
+  />
+
+  <DebugCard
+    label="Looking Away"
+    value={
+      telemetry?.lookingAway
+        ? "Yes"
+        : "No"
+    }
+  />
+
+  <DebugCard
+    label="Blink"
+    value={
+      telemetry?.blinkDetected
+        ? "Yes"
+        : "No"
+    }
+  />
+
+  <DebugCard
+    label="Eye Distance"
+    value={
+      telemetry?.eyeDistance ??
+      0
+    }
+  />
+
+</div>
+
+      {/* <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+
+  <DebugCard
+    label="Face Detected"
+    value={
+      telemetry?.faceDetected
+        ? "Yes"
+        : "No"
+    }
+  />
+
+  <DebugCard
+    label="Face Count"
+    value={telemetry?.faceCount ?? 0}
+  />
+
+  <DebugCard
+    label="Attention"
+    value={
+      telemetry?.attentionStatus ??
+      "N/A"
+    }
+  />
+
+  <DebugCard
+    label="Attention Score"
+    value={
+      telemetry?.attentionScore ??
+      0
+    }
+  />
+
+  <DebugCard
+    label="Drowsy"
+    value={
+      telemetry?.isDrowsy
+        ? "Yes"
+        : "No"
+    }
+  />
+
+  <DebugCard
+    label="Looking Away"
+    value={
+      telemetry?.lookingAway
+        ? "Yes"
+        : "No"
+    }
+  />
+
+  <DebugCard
+    label="Head Direction"
+    value={
+      telemetry?.headDirection ??
+      "Center"
+    }
+  />
+
+  <DebugCard
+    label="Blink"
+    value={
+      telemetry?.blinkDetected
+        ? "Yes"
+        : "No"
+    }
+  />
+
+  <DebugCard
+    label="Eye Distance"
+    value={
+      telemetry?.eyeDistance ??
+      0
+    }
+  />
+</div> */}
     </div>
     <DriverHealthMonitoring />
     </>

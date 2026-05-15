@@ -2,6 +2,7 @@ import axios from "axios";
 import { motion, AnimatePresence } from "motion/react";
 import Webcam from "react-webcam";
 import { useRef,useEffect,useState } from "react";
+import { useAI } from "../../context/AIContext";
 import { Camera, Eye, Target, Circle, Clock, Pin, Minimize2, Maximize2, X, AlertTriangle,  } from "lucide-react";
 
 interface DriverMonitorProps {
@@ -11,14 +12,25 @@ interface DriverMonitorProps {
 
 export default function DriverMonitor({ isCompact = false, onToggleCompact }: DriverMonitorProps) {
 
+const {
+  setFaceDetected: setGlobalFaceDetected,
+  setIsDrowsy: setGlobalIsDrowsy,
+  setAttentionScore: setGlobalAttentionScore,
+  setAttentionStatus: setGlobalAttentionStatus,
+  setTelemetry,
+} = useAI();
+
+
   const webcamRef = useRef<Webcam>(null);
     const [faceDetected, setFaceDetected] = useState(false);
   const [faceCount, setFaceCount] = useState(0);
   const [isScanning, setIsScanning] = useState(false);
   const [isDrowsy, setIsDrowsy] = useState(false);
   const previousDrowsyRef = useRef(false);
+  const [attentionScore,setAttentionScore]= useState(0)
   const [showDangerAlert, setShowDangerAlert] = useState(false);
 const [attentionStatus, setAttentionStatus] = useState("Focused");
+
 
 const speakAlert = (message: string) => {
   const speech = new SpeechSynthesisUtterance(message);
@@ -127,11 +139,34 @@ const colorClasses = {
         },
       }
     );
-
     setFaceDetected(response.data.faceDetected);
-        setFaceCount(response.data.faceCount);
-        setIsDrowsy(response.data.isDrowsy);
-        setAttentionStatus(response.data.attentionStatus);
+
+setIsDrowsy(response.data.isDrowsy);
+
+setAttentionStatus(
+  response.data.attentionStatus
+);
+
+setAttentionScore(
+  response.data.attentionScore
+);
+  setGlobalFaceDetected(
+  response.data.faceDetected
+);
+
+setGlobalIsDrowsy(
+  response.data.isDrowsy
+);
+
+setGlobalAttentionStatus(
+  response.data.attentionStatus
+);
+
+setGlobalAttentionScore(
+  response.data.attentionScore
+);
+setTelemetry(response.data)
+
       } catch (error) {
         console.error("Face detection error:", error);
       } finally {
