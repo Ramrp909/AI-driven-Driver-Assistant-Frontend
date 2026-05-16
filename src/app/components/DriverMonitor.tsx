@@ -32,6 +32,13 @@ const {
 const [attentionStatus, setAttentionStatus] = useState("Focused");
 
 
+const [lastAlertTime, setLastAlertTime] =
+  useState(0);
+
+
+const ALERT_COOLDOWN = 8000;
+
+
 const speakAlert = (message: string) => {
   const speech = new SpeechSynthesisUtterance(message);
 
@@ -186,6 +193,17 @@ setTelemetry(response.data)
   }, 5000);
 };
 
+const triggerDangerRoad = () => {
+  setShowDangerAlert(true);
+
+  speakAlert(
+    "Warning. Driver distraction detected.Please focus on road"
+  );
+
+  setTimeout(() => {
+    setShowDangerAlert(false);
+  }, 5000);
+};
   useEffect(() => {
     const interval = setInterval(() => {
         detectFace();
@@ -209,16 +227,61 @@ setTelemetry(response.data)
 //   }
 // }, [isDrowsy]);
 
+// useEffect(() => {
+//   if (
+//     isDrowsy &&
+//     !previousDrowsyRef.current
+//   ) {
+//     triggerDangerAlert();
+//   }
+
+//   previousDrowsyRef.current = isDrowsy;
+// }, [isDrowsy]);
+
 useEffect(() => {
+
+  const now = Date.now();
+
+  // Prevent popup spam
   if (
-    isDrowsy &&
-    !previousDrowsyRef.current
+    now - lastAlertTime <
+    ALERT_COOLDOWN
   ) {
-    triggerDangerAlert();
+    return;
   }
 
-  previousDrowsyRef.current = isDrowsy;
-}, [isDrowsy]);
+  // =========================
+  // DROWSINESS ALERT
+  // =========================
+
+  if (isDrowsy) {
+
+    triggerDangerAlert();
+
+    setLastAlertTime(now);
+
+    return;
+  }
+
+  // =========================
+  // DISTRACTION ALERT
+  // =========================
+
+  if (
+    attentionStatus ===
+    "Distracted"
+  ) {
+
+    triggerDangerRoad();
+
+    setLastAlertTime(now);
+  }
+
+}, [
+  isDrowsy,
+  attentionStatus,
+  lastAlertTime,
+]);
 
 
   // const [isDetected, setIsDetected] = useState(true);
