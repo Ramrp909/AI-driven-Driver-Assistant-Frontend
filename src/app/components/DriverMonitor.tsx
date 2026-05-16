@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import Webcam from "react-webcam";
 import { useRef,useEffect,useState } from "react";
 import { useAI } from "../../context/AIContext";
+import NotificationSystem, { demoNotifications } from "./NotificationSystem";
 import { Camera, Eye, Target, Circle, Clock, Pin, Minimize2, Maximize2, X, AlertTriangle,  } from "lucide-react";
 
 interface DriverMonitorProps {
@@ -18,6 +19,7 @@ const {
   setAttentionScore: setGlobalAttentionScore,
   setAttentionStatus: setGlobalAttentionStatus,
   setTelemetry,
+  addNotification,
 } = useAI();
 
 
@@ -27,8 +29,9 @@ const {
   const [isScanning, setIsScanning] = useState(false);
   const [isDrowsy, setIsDrowsy] = useState(false);
   const previousDrowsyRef = useRef(false);
-  const [attentionScore,setAttentionScore]= useState(0)
-  const [showDangerAlert, setShowDangerAlert] = useState(false);
+  const [attentionScore,setAttentionScore]= useState(0);
+  const [showDangerAlert,setShowDangerAlert] = useState(false);
+  
 const [attentionStatus, setAttentionStatus] = useState("Focused");
 
 
@@ -181,28 +184,48 @@ setTelemetry(response.data)
       }
     };
 
-  const triggerDangerAlert = () => {
+ const triggerDangerAlert = () => {
+
+  // Step 1
+  // Show fullscreen emergency popup
   setShowDangerAlert(true);
 
+  // Voice alert
   speakAlert(
-    "Warning. Driver drowsiness detected. Please stay alert."
+    "Warning. Driver drowsiness detected."
   );
 
+  // Step 2
+  // After popup duration
   setTimeout(() => {
+
+    // Hide fullscreen popup
     setShowDangerAlert(false);
+
+    // Show beautiful right-side notification
+    addNotification(
+      demoNotifications.drowsinessDetected
+    );
+
   }, 5000);
 };
 
 const triggerDangerRoad = () => {
-  setShowDangerAlert(true);
+
+  addNotification({
+    type: "warning",
+
+    title: "Driver Distracted",
+
+    message:
+      "Please focus on the road.",
+
+    duration: 5000,
+  });
 
   speakAlert(
-    "Warning. Driver distraction detected.Please focus on road"
+    "Warning. Driver distraction detected."
   );
-
-  setTimeout(() => {
-    setShowDangerAlert(false);
-  }, 5000);
 };
   useEffect(() => {
     const interval = setInterval(() => {
@@ -289,6 +312,8 @@ useEffect(() => {
   if (isCompact) {
     return (
       <motion.div
+      drag
+      dragMomentum={false}
         className="fixed left-4 top-24 z-30 w-80"
         initial={{ x: -400, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}

@@ -102,32 +102,32 @@ export default function NotificationSystem({
 }
 
 // Hook to manage notifications
-export function useNotifications() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+// export function useNotifications() {
+//   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  const addNotification = (notification: Omit<Notification, "id">) => {
-    const id = Math.random().toString(36).substring(7);
-    const newNotification = { ...notification, id };
+//   const addNotification = (notification: Omit<Notification, "id">) => {
+//     const id = Math.random().toString(36).substring(7);
+//     const newNotification = { ...notification, id };
 
-    setNotifications((prev) => [...prev, newNotification]);
+//     setNotifications((prev) => [...prev, newNotification]);
 
-    if (notification.duration) {
-      setTimeout(() => {
-        dismissNotification(id);
-      }, notification.duration);
-    }
-  };
+//     if (notification.duration) {
+//       setTimeout(() => {
+//         dismissNotification(id);
+//       }, notification.duration);
+//     }
+//   };
 
-  const dismissNotification = (id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-  };
+//   const dismissNotification = (id: string) => {
+//     setNotifications((prev) => prev.filter((n) => n.id !== id));
+//   };
 
-  return {
-    notifications,
-    addNotification,
-    dismissNotification,
-  };
-}
+//   return {
+//     notifications,
+//     addNotification,
+//     dismissNotification,
+//   };
+// }
 
 // Demo notification examples (can be triggered from anywhere in the app)
 export const demoNotifications = {

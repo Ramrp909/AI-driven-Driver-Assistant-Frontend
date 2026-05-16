@@ -11,7 +11,9 @@ import VehicleControls from "./components/VehicleControls";
 import AlertPanel from "./components/AlertPanel";
 import VehicleMetrics from "./components/VehicleMetrics";
 import AIVisionTesting from "./components/AIVisionTesting";
-import NotificationSystem, { useNotifications, demoNotifications } from "./components/NotificationSystem";
+
+import NotificationSystem, { demoNotifications } from "./components/NotificationSystem";
+import { useAI } from "../context/AIContext";
 
 export default function App() {
   const [showIntro, setShowIntro] = useState(true);
@@ -20,7 +22,25 @@ export default function App() {
   const [showAIVision, setShowAIVision] = useState(false);
   const [isMonitorCompact, setIsMonitorCompact] = useState(false);
   const [showFloatingMonitor, setShowFloatingMonitor] = useState(false);
-  const { notifications, addNotification, dismissNotification } = useNotifications();
+
+
+  const {
+  notifications,
+  setNotifications,
+  addNotification
+} = useAI();
+
+const dismissNotification = (
+  id: string
+) => {
+
+  setNotifications((prev) =>
+    prev.filter(
+      (notification) =>
+        notification.id !== id
+    )
+  );
+};
 
   useEffect(() => {
     if (isDark) {
