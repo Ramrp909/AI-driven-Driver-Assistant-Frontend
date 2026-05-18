@@ -4,7 +4,9 @@ import Webcam from "react-webcam";
 import { useRef,useEffect,useState } from "react";
 import { useAI } from "../../context/AIContext";
 import NotificationSystem, { demoNotifications } from "./NotificationSystem";
+
 import { Camera, Eye, Target, Circle, Clock, Pin, Minimize2, Maximize2, X, AlertTriangle,  } from "lucide-react";
+import useDriverMonitor from "./useDriverMonitor";
 
 interface DriverMonitorProps {
   isCompact?: boolean;
@@ -14,56 +16,22 @@ interface DriverMonitorProps {
 export default function DriverMonitor({ isCompact = false, onToggleCompact }: DriverMonitorProps) {
 
 const {
-  setFaceDetected: setGlobalFaceDetected,
-  setIsDrowsy: setGlobalIsDrowsy,
-  setAttentionScore: setGlobalAttentionScore,
-  setAttentionStatus: setGlobalAttentionStatus,
-  setTelemetry,
-  addNotification,
-} = useAI();
+  webcamRef,
+  faceDetected,
+  faceCount,
+  isScanning,
+  isDrowsy,
+  attentionScore,
+  attentionStatus,
+  showDangerAlert,
+} = useDriverMonitor();
 
-
-  const webcamRef = useRef<Webcam>(null);
-    const [faceDetected, setFaceDetected] = useState(false);
-  const [faceCount, setFaceCount] = useState(0);
-  const [isScanning, setIsScanning] = useState(false);
-  const [isDrowsy, setIsDrowsy] = useState(false);
-  const previousDrowsyRef = useRef(false);
-  const [attentionScore,setAttentionScore]= useState(0);
-  const [showDangerAlert,setShowDangerAlert] = useState(false);
-  
-const [attentionStatus, setAttentionStatus] = useState("Focused");
-
-
-const [lastAlertTime, setLastAlertTime] =
-  useState(0);
-
-
-const ALERT_COOLDOWN = 8000;
-
-
-const speakAlert = (message: string) => {
-  const speech = new SpeechSynthesisUtterance(message);
-
-  speech.volume = 1;
-  speech.rate = 0.9;
-  speech.pitch = 0.8;
-
-  window.speechSynthesis.speak(speech);
-};
-
-  // const statusCards = [
-  //   { label: "AI Status", value: "Active", color: "green", icon: Target },
-  //   { label: "Driver Attention", value: "95%", color: "green", icon: Eye },
-  //   { label: "Detection Accuracy", value: "98%", color: "cyan", icon: Target },
-  //   { label: "Posture Status", value: "Good", color: "green", icon: Circle },
-  //   { label: "Response Time", value: "0.2s", color: "cyan", icon: Clock },
-  // ];
 const colorClasses = {
   green: "text-green-500",
   cyan: "text-cyan-500",
   red: "text-red-500",
 };
+
   const statusCards = [
   {
     label: "AI Status",
@@ -125,193 +93,58 @@ const colorClasses = {
   },
 ];
 
-  const detectFace = async () => {
-  if (!webcamRef.current) return;
 
-  const screenshot = webcamRef.current.getScreenshot();
+ const emergencyOverlay = showDangerAlert && (
+  <motion.div
+    className="fixed inset-0 z-[100] flex items-center justify-center bg-red-500/20 backdrop-blur-md"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+  >
+    <motion.div
+      className="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-2xl border border-red-500 max-w-md w-full mx-4"
+      initial={{ scale: 0.8, y: 40 }}
+      animate={{ scale: 1, y: 0 }}
+      exit={{ scale: 0.8, y: 40 }}
+    >
+      <div className="flex flex-col items-center text-center">
+        <motion.div
+          className="w-24 h-24 rounded-full bg-red-500 flex items-center justify-center mb-6"
+          animate={{
+            scale: [1, 1.15, 1],
+          }}
+          transition={{
+            duration: 1,
+            repeat: Infinity,
+          }}
+        >
+          <AlertTriangle className="w-12 h-12 text-white" />
+        </motion.div>
 
-  if (!screenshot) return;
+        <h2 className="text-3xl font-bold text-red-500 mb-3">
+          Drowsiness Detected
+        </h2>
 
-  try {
-    setIsScanning(true);
+        <p className="text-slate-600 dark:text-slate-300 mb-6">
+          Driver attention level critically low.
+          Please stay alert or take a break immediately.
+        </p>
 
-    const blob = await fetch(screenshot).then((res) => res.blob());
-
-    const formData = new FormData();
-    formData.append("file", blob, "frame.jpg");
-
-    const response = await axios.post(
-      "http://127.0.0.1:8000/detect-face",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    setFaceDetected(response.data.faceDetected);
-
-setIsDrowsy(response.data.isDrowsy);
-
-setAttentionStatus(
-  response.data.attentionStatus
+        <div className="w-full p-4 rounded-2xl bg-red-500/10 border border-red-500/20">
+          <p className="text-red-500 font-medium">
+            AI Emergency Safety Protocol Activated
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  </motion.div>
 );
 
-setAttentionScore(
-  response.data.attentionScore
-);
-  setGlobalFaceDetected(
-  response.data.faceDetected
-);
 
-setGlobalIsDrowsy(
-  response.data.isDrowsy
-);
-
-setGlobalAttentionStatus(
-  response.data.attentionStatus
-);
-
-setGlobalAttentionScore(
-  response.data.attentionScore
-);
-setTelemetry(response.data)
-
-      } catch (error) {
-        console.error("Face detection error:", error);
-      } finally {
-        setIsScanning(false);
-      }
-    };
-
- const triggerDangerAlert = () => {
-
-  // Step 1
-  // Show fullscreen emergency popup
-  setShowDangerAlert(true);
-
-  // Voice alert
-  speakAlert(
-    "Warning. Driver drowsiness detected."
-  );
-
-  // Step 2
-  // After popup duration
-  setTimeout(() => {
-
-    // Hide fullscreen popup
-    setShowDangerAlert(false);
-
-    // Show beautiful right-side notification
-    addNotification(
-      demoNotifications.drowsinessDetected
-    );
-
-  }, 5000);
-};
-
-const triggerDangerRoad = () => {
-
-  addNotification({
-    type: "warning",
-
-    title: "Driver Distracted",
-
-    message:
-      "Please focus on the road.",
-
-    duration: 5000,
-  });
-
-  speakAlert(
-    "Warning. Driver distraction detected."
-  );
-};
-  useEffect(() => {
-    const interval = setInterval(() => {
-        detectFace();
-      }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-//   useEffect(() => {
-//   if (isDrowsy) {
-//     setShowDangerAlert(true);
-
-//     const timeout = setTimeout(() => {
-//       setShowDangerAlert(false);
-
-//       // Reset drowsy state after popup closes
-//       setIsDrowsy(false);
-//     }, 5000);
-
-//     return () => clearTimeout(timeout);
-//   }
-// }, [isDrowsy]);
-
-// useEffect(() => {
-//   if (
-//     isDrowsy &&
-//     !previousDrowsyRef.current
-//   ) {
-//     triggerDangerAlert();
-//   }
-
-//   previousDrowsyRef.current = isDrowsy;
-// }, [isDrowsy]);
-
-useEffect(() => {
-
-  const now = Date.now();
-
-  // Prevent popup spam
-  if (
-    now - lastAlertTime <
-    ALERT_COOLDOWN
-  ) {
-    return;
-  }
-
-  // =========================
-  // DROWSINESS ALERT
-  // =========================
-
-  if (isDrowsy) {
-
-    triggerDangerAlert();
-
-    setLastAlertTime(now);
-
-    return;
-  }
-
-  // =========================
-  // DISTRACTION ALERT
-  // =========================
-
-  if (
-    attentionStatus ===
-    "Distracted"
-  ) {
-
-    triggerDangerRoad();
-
-    setLastAlertTime(now);
-  }
-
-}, [
-  isDrowsy,
-  attentionStatus,
-  lastAlertTime,
-]);
-
-
-  // const [isDetected, setIsDetected] = useState(true);
-
-  if (isCompact) {
-    return (
-      <motion.div
+const renderCompactLayout = () => (
+  <>
+    {/* paste compact JSX here */}
+    <motion.div
       drag
       dragMomentum={false}
         className="fixed left-4 top-24 z-30 w-80"
@@ -392,56 +225,13 @@ useEffect(() => {
           </div>
         </div>
       </motion.div>
-    );
-  }
-  const emergencyOverlay = showDangerAlert && (
-  <motion.div
-    className="fixed inset-0 z-[100] flex items-center justify-center bg-red-500/20 backdrop-blur-md"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-  >
-    <motion.div
-      className="bg-white dark:bg-slate-900 rounded-3xl p-8 shadow-2xl border border-red-500 max-w-md w-full mx-4"
-      initial={{ scale: 0.8, y: 40 }}
-      animate={{ scale: 1, y: 0 }}
-      exit={{ scale: 0.8, y: 40 }}
-    >
-      <div className="flex flex-col items-center text-center">
-        <motion.div
-          className="w-24 h-24 rounded-full bg-red-500 flex items-center justify-center mb-6"
-          animate={{
-            scale: [1, 1.15, 1],
-          }}
-          transition={{
-            duration: 1,
-            repeat: Infinity,
-          }}
-        >
-          <AlertTriangle className="w-12 h-12 text-white" />
-        </motion.div>
-
-        <h2 className="text-3xl font-bold text-red-500 mb-3">
-          Drowsiness Detected
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300 mb-6">
-          Driver attention level critically low.
-          Please stay alert or take a break immediately.
-        </p>
-
-        <div className="w-full p-4 rounded-2xl bg-red-500/10 border border-red-500/20">
-          <p className="text-red-500 font-medium">
-            AI Emergency Safety Protocol Activated
-          </p>
-        </div>
-      </div>
-    </motion.div>
-  </motion.div>
+  </>
 );
 
-  return (<>
-    {emergencyOverlay}
+const renderDesktopLayout = () => (
+  <>
+    {/* existing normal return JSX */}
+    
     <motion.section
       id="driver-monitor"
       className="scroll-mt-20"
@@ -558,6 +348,14 @@ useEffect(() => {
         </div>
       </div>
     </motion.section>
+  </>
+);
+
+  return (<>
+  {emergencyOverlay}
+    {isCompact
+      ? renderCompactLayout()
+      : renderDesktopLayout()}
     </>
   );
   
