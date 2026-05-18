@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import axios from "axios";
-import { useAI } from "../../context/AIContext";
-import { demoNotifications } from "../components/NotificationSystem";
+import { useAI } from "../context/AIContext";
+import { demoNotifications } from "../app/components/NotificationSystem";
 
 export default function useDriverMonitor() {
 

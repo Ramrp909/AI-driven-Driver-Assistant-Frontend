@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { X, Eye, Moon, Target } from "lucide-react";
 import Webcam from "react-webcam";
-import useDriverMonitor from "./useDriverMonitor";
+import useDriverMonitor from "../../hooks/useDriverMonitor";
 
 interface FloatingMobileMonitorProps {
   onClose: () => void;

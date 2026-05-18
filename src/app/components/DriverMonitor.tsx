@@ -7,7 +7,7 @@ import NotificationSystem, { demoNotifications } from "./NotificationSystem";
 
 
 import { Camera, Eye, Target, Circle, Clock, Pin, Minimize2, Maximize2, X, AlertTriangle,  } from "lucide-react";
-import useDriverMonitor from "./useDriverMonitor";
+import useDriverMonitor from "../../hooks/useDriverMonitor";
 import MobileStatusPills from "./MobileStatusPills";
 
 interface DriverMonitorProps {
@@ -229,7 +229,7 @@ const renderCompactLayout = () => (
             <div className="absolute top-2 left-1/2 -translate-x-1/2">
               <div className="px-2 py-1 bg-green-500/90 backdrop-blur-sm rounded-full flex items-center gap-1">
                 <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                <span className="text-xs font-medium text-white">Active</span>
+                <span className="text-[10px] font-medium tracking-widetext-white">Active</span>
               </div>
             </div>
           </div>
@@ -273,8 +273,9 @@ const renderDesktopLayout = () => (
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.3 }}
     >
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-slate-900 dark:text-white">Driver Monitor</h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className=
+        "text-sm font-semibold tracking-wide text-slate-300 uppercase">Driver Monitor</h2>
         {onToggleCompact && (
           <button
             onClick={onToggleCompact}
@@ -287,23 +288,32 @@ const renderDesktopLayout = () => (
       </div>
 
       {/* Main Camera Card */}
-      <div className="backdrop-blur-lg bg-white/80 dark:bg-slate-800/80 rounded-2xl p-6 shadow-xl border border-gray-200/50 dark:border-slate-700/50">
+      {/* <div className="backdrop-blur-lg bg-white/80 dark:bg-slate-800/80 rounded-2xl p-6 shadow-xl border border-gray-200/50 dark:border-slate-700/50"> */}
+      <div className="h-full flex flex-col">
         {/* Webcam Placeholder */}
-        {/* <div className="relative aspect-video bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800 rounded-xl overflow-hidden mb-6"> */}
+
           <div className="
 relative
-h-56
-md:aspect-video
-md:h-auto
+
+aspect-video
+md:aspect-[4/3]
+
+w-full
+
 bg-gradient-to-br
-from-slate-100
-to-slate-200
-dark:from-slate-900
-dark:to-slate-800
-rounded-xl
+from-slate-950
+to-slate-900
+
+rounded-[28px]
 overflow-hidden
-mb-6
+
+border border-cyan-500/20
+shadow-[0_0_30px_rgba(6,182,212,0.08)]
+
+mb-3
 ">
+
+              
           {/* Camera icon placeholder */}
           <div className="absolute inset-0 flex items-center justify-center">
             {/* <Camera className="w-20 h-20 text-slate-400 dark:text-slate-600" /> */}
@@ -333,26 +343,26 @@ mb-6
           />
 
           {/* Corner brackets */}
-          <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-cyan-500" />
-          <div className="absolute top-4 right-4 w-8 h-8 border-r-2 border-t-2 border-cyan-500" />
-          <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-cyan-500" />
-          <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-cyan-500" />
+          <div className="absolute top-4 left-4 w-5 h-5 border-l-2 border-t-2 border-cyan-500" />
+          <div className="absolute top-4 right-4 w-5 h-5 border-r-2 border-t-2 border-cyan-500" />
+          <div className="absolute bottom-4 left-4 w-5 h-5 border-l-2 border-b-2 border-cyan-500" />
+          <div className="absolute bottom-4 right-4 w-5 h-5 border-r-2 border-b-2 border-cyan-500" />
 
           {/* Status Badges */}
           <div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-2">
             <div
-                  className={`px-3 py-1.5 backdrop-blur-sm rounded-full flex items-center gap-2 ${
+                  className={`px-2 py-1 backdrop-blur-sm rounded-full flex items-center gap-2 ${
                     faceDetected
                       ? "bg-green-500/90"
                       : "bg-red-500/90"
                   }`}
                 >
               <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-              <span className="text-xs font-medium text-white">{faceDetected ? "Face Detected" : "No Driver"}</span>
+              <span className="text-[10px] font-medium tracking-widetext-white">{faceDetected ? "Face Detected" : "No Driver"}</span>
             </div>
             <div className="px-3 py-1.5 bg-cyan-500/90 backdrop-blur-sm rounded-full flex items-center gap-2">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-              <span className="text-xs font-medium text-white">AI Monitoring</span>
+              <span className="text-[10px] font-medium tracking-widetext-white">AI Monitoring</span>
             </div>
           </div>
 
@@ -363,19 +373,19 @@ mb-6
               animate={{ opacity: [1, 0.3, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             />
-            <span className="text-xs font-medium text-white">Recording</span>
+            <span className="text-[10px] font-medium tracking-widetext-white">Recording</span>
           </div>
         </div>
 
         {/* Status Cards Grid */}
         {!isMobile && (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 gap-2 mt-3">
           {statusCards.map((card, index) => {
             const Icon = card.icon;
             return (
               <motion.div
                 key={card.label}
-                className="p-4 bg-slate-100 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700"
+                className="p-2 bg-slate-100 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 + index * 0.1 }}

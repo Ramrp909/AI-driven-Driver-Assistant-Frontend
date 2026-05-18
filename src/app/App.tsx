@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Eye } from "lucide-react";
+import { Eye} from "lucide-react";
 import IntroScreen from "./components/IntroScreen";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
@@ -13,10 +13,13 @@ import VehicleMetrics from "./components/VehicleMetrics";
 import AIVisionTesting from "./components/AIVisionTesting";
 import Webcam from "react-webcam";
 
+import { BrowserRouter,Routes,Route } from "react-router-dom";
+
 
 import NotificationSystem, { demoNotifications } from "./components/NotificationSystem";
 import { useAI } from "../context/AIContext";
 import FloatingMobileMonitor from "./components/FloatingMobileMonitor";
+import CockpitTest from "../pages/CockpitTest";
 
 export default function App() {
   const [showIntro, setShowIntro] = useState(true);
@@ -125,8 +128,18 @@ const dismissNotification = (
 }, []);
 
   return (
-    <>
-      <AnimatePresence>
+    
+
+      <BrowserRouter>
+
+  <Routes>
+
+    <Route
+      path="/"
+      element={
+        <>
+
+    <AnimatePresence>
         {showIntro && <IntroScreen onComplete={() => setShowIntro(false)} />}
       </AnimatePresence>
 
@@ -325,6 +338,18 @@ const dismissNotification = (
           </main>
         </div>
       )}
-    </>
+      </>
+      }
+    />
+
+    <Route
+      path="/cockpittest"
+      element={<CockpitTest />}
+    />
+
+  </Routes>
+
+</BrowserRouter>
+    
   );
 }

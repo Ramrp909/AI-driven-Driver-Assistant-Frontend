@@ -43,6 +43,7 @@ export default function Navbar({ isDark, onThemeToggle }: NavbarProps) {
               Tesla Model S
             </span>
           </div>
+          
 
           {/* Right: Status icons and controls */}
           <div className="flex items-center gap-3 lg:gap-4">
