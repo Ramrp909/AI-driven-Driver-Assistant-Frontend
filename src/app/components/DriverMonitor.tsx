@@ -5,8 +5,10 @@ import { useRef,useEffect,useState } from "react";
 import { useAI } from "../../context/AIContext";
 import NotificationSystem, { demoNotifications } from "./NotificationSystem";
 
+
 import { Camera, Eye, Target, Circle, Clock, Pin, Minimize2, Maximize2, X, AlertTriangle,  } from "lucide-react";
 import useDriverMonitor from "./useDriverMonitor";
+import MobileStatusPills from "./MobileStatusPills";
 
 interface DriverMonitorProps {
   isCompact?: boolean;
@@ -25,6 +27,9 @@ const {
   attentionStatus,
   showDangerAlert,
 } = useDriverMonitor();
+
+const [isMobile, setIsMobile] =
+  useState(false);
 
 const colorClasses = {
   green: "text-green-500",
@@ -92,6 +97,34 @@ const colorClasses = {
     icon: Clock,
   },
 ];
+
+useEffect(() => {
+
+  const checkMobile = () => {
+
+    setIsMobile(
+      window.innerWidth < 768
+    );
+
+  };
+
+  checkMobile();
+
+  window.addEventListener(
+    "resize",
+    checkMobile
+  );
+
+  return () => {
+
+    window.removeEventListener(
+      "resize",
+      checkMobile
+    );
+
+  };
+
+}, []);
 
 
  const emergencyOverlay = showDangerAlert && (
@@ -202,6 +235,7 @@ const renderCompactLayout = () => (
           </div>
 
           {/* Quick Stats */}
+          
           <div className="grid grid-cols-2 gap-2 mt-3">
             {statusCards.slice(0, 4).map((card) => {
               const Icon = card.icon;
@@ -255,7 +289,21 @@ const renderDesktopLayout = () => (
       {/* Main Camera Card */}
       <div className="backdrop-blur-lg bg-white/80 dark:bg-slate-800/80 rounded-2xl p-6 shadow-xl border border-gray-200/50 dark:border-slate-700/50">
         {/* Webcam Placeholder */}
-        <div className="relative aspect-video bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800 rounded-xl overflow-hidden mb-6">
+        {/* <div className="relative aspect-video bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800 rounded-xl overflow-hidden mb-6"> */}
+          <div className="
+relative
+h-56
+md:aspect-video
+md:h-auto
+bg-gradient-to-br
+from-slate-100
+to-slate-200
+dark:from-slate-900
+dark:to-slate-800
+rounded-xl
+overflow-hidden
+mb-6
+">
           {/* Camera icon placeholder */}
           <div className="absolute inset-0 flex items-center justify-center">
             {/* <Camera className="w-20 h-20 text-slate-400 dark:text-slate-600" /> */}
@@ -320,6 +368,7 @@ const renderDesktopLayout = () => (
         </div>
 
         {/* Status Cards Grid */}
+        {!isMobile && (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {statusCards.map((card, index) => {
             const Icon = card.icon;
@@ -346,6 +395,13 @@ const renderDesktopLayout = () => (
             );
           })}
         </div>
+        )}
+
+{isMobile && (
+  <MobileStatusPills
+    statusCards={statusCards}
+  />
+)}
       </div>
     </motion.section>
   </>

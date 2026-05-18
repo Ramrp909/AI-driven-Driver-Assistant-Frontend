@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { User, Check, Save } from "lucide-react";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 interface Profile {
   id: number;
@@ -43,10 +43,16 @@ export default function DriverProfile() {
     },
   ]);
 
+ ;
+
   const [activeProfile, setActiveProfile] = useState(1);
+const [showProfileSettings,
+  setShowProfileSettings] =
+  useState(false);
 
   const currentProfile = profiles.find((p) => p.id === activeProfile);
 
+  
   return (
     <motion.section
       className="scroll-mt-20"
@@ -54,7 +60,33 @@ export default function DriverProfile() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.5 }}
     >
-      <h2 className="mb-6 text-slate-900 dark:text-white">Driver Profiles</h2>
+     
+<div className="flex items-center justify-between mb-6">
+
+  <h2 className="text-slate-900 dark:text-white">
+    Driver Profiles
+  </h2>
+
+  <button
+    onClick={() =>
+      setShowProfileSettings(
+        !showProfileSettings
+      )
+    }
+    className="
+      px-3 py-1
+      rounded-lg
+      bg-cyan-500
+      text-white
+      text-sm
+    "
+  >
+    {showProfileSettings
+      ? "Close"
+      : "Edit"}
+  </button>
+
+</div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Profile Selection */}
@@ -119,7 +151,10 @@ export default function DriverProfile() {
         </div>
 
         {/* Current Profile Settings */}
-        {currentProfile && (
+        
+{currentProfile &&
+  showProfileSettings && (
+        (
           <div className="backdrop-blur-lg bg-white/80 dark:bg-slate-800/80 rounded-2xl p-6 shadow-xl border border-gray-200/50 dark:border-slate-700/50">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-slate-900 dark:text-white">Profile Settings</h3>
@@ -165,7 +200,7 @@ export default function DriverProfile() {
               <span className="font-medium">Save Profile Changes</span>
             </button>
           </div>
-        )}
+        ))}
       </div>
     </motion.section>
   );

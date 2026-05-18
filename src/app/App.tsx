@@ -11,9 +11,12 @@ import VehicleControls from "./components/VehicleControls";
 import AlertPanel from "./components/AlertPanel";
 import VehicleMetrics from "./components/VehicleMetrics";
 import AIVisionTesting from "./components/AIVisionTesting";
+import Webcam from "react-webcam";
+
 
 import NotificationSystem, { demoNotifications } from "./components/NotificationSystem";
 import { useAI } from "../context/AIContext";
+import FloatingMobileMonitor from "./components/FloatingMobileMonitor";
 
 export default function App() {
   const [showIntro, setShowIntro] = useState(true);
@@ -22,6 +25,10 @@ export default function App() {
   const [showAIVision, setShowAIVision] = useState(false);
   const [isMonitorCompact, setIsMonitorCompact] = useState(false);
   const [showFloatingMonitor, setShowFloatingMonitor] = useState(false);
+
+
+const [isMobile, setIsMobile] =
+  useState(false);
 
 
   const {
@@ -89,6 +96,34 @@ const dismissNotification = (
     setIsMonitorCompact(!isMonitorCompact);
   };
 
+  useEffect(() => {
+
+  const checkMobile = () => {
+
+    setIsMobile(
+      window.innerWidth < 768
+    );
+
+  };
+
+  checkMobile();
+
+  window.addEventListener(
+    "resize",
+    checkMobile
+  );
+
+  return () => {
+
+    window.removeEventListener(
+      "resize",
+      checkMobile
+    );
+
+  };
+
+}, []);
+
   return (
     <>
       <AnimatePresence>
@@ -107,7 +142,7 @@ const dismissNotification = (
           />
 
           {/* Compact Monitor Mode */}
-          {isMonitorCompact && (
+          {isMonitorCompact && !isMobile && (
             <DriverMonitor
               isCompact={true}
               onToggleCompact={toggleMonitorMode}
@@ -115,8 +150,19 @@ const dismissNotification = (
           )}
 
           {/* Mobile Floating Monitor Button */}
+          
           <motion.button
-            className="fixed bottom-6 left-6 z-40 lg:hidden p-4 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full shadow-2xl"
+            // className="fixed bottom-6 left-6 z-40 lg:hidden p-4 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full shadow-2xl"
+            className={`
+            fixed bottom-6 left-6 z-40
+            p-4 rounded-full shadow-2xl
+            bg-gradient-to-br
+            from-cyan-500 to-blue-600
+
+            ${isMobile && isMonitorCompact
+              ? "flex"
+              : "hidden"}
+            `}
             onClick={() => setShowFloatingMonitor(!showFloatingMonitor)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -154,9 +200,14 @@ const dismissNotification = (
                         Close
                       </button>
                     </div>
-                    <div className="aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center">
+                    {/* <div className="aspect-video bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center">
                       <Eye className="w-16 h-16 text-slate-400" />
-                    </div>
+                    </div> */}
+                    <FloatingMobileMonitor
+  onClose={() =>
+    setShowFloatingMonitor(false)
+  }
+/>
                   </div>
                 </motion.div>
               </>
@@ -202,22 +253,25 @@ const dismissNotification = (
               {/* Driver Health Monitoring - Below Driver Monitor in Default Mode */}
               {/* {!isMonitorCompact && <DriverHealthMonitoring />} */}
 
-              {/* Driver Profile Management */}
-              <section id="settings" className="scroll-mt-20">
-                <DriverProfile />
-              </section>
-
               {/* Vehicle Metrics Section */}
               {!isMonitorCompact && (
                 <section id="vehicle-metrics" className="scroll-mt-20">
                   <VehicleMetrics />
                 </section>
               )}
-
               {/* Vehicle Controls Section */}
               <section id="vehicle-controls" className="scroll-mt-20">
                 <VehicleControls />
               </section>
+
+              {/* Driver Profile Management */}
+              <section id="settings" className="scroll-mt-20">
+                <DriverProfile />
+              </section>
+
+              
+
+              
 
               {/* Alerts Section */}
               <section id="alerts" className="scroll-mt-20">

@@ -44,7 +44,7 @@ export default function VehicleControls() {
     >
       <h2 className="mb-6 text-slate-900 dark:text-white">Vehicle Controls</h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 md:gap-6">
         {/* AC Temperature Control */}
         <div className="backdrop-blur-lg bg-white/80 dark:bg-slate-800/80 rounded-2xl p-6 shadow-xl border border-gray-200/50 dark:border-slate-700/50">
           <div className="flex items-center gap-3 mb-4">
