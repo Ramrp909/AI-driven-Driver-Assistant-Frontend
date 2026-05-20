@@ -1,11 +1,23 @@
+import { useEffect, useState } from "react";
+import AIAlerts from "../app/components/AIAlerts";
+import AICenter from "../app/components/AICenter";
+import CockpitHeader from "../app/components/CockpitHeader";
 import DriverMonitor
 from "../app/components/DriverMonitor";
 import VehicleControls from "../app/components/VehicleControls";
 import VehicleMetrics from "../app/components/VehicleMetrics";
 import VehicleStatus from "../app/components/VehicleStatus";
-
+import NavRail from "../app/components/NavRail";
 
 export default function CockpitLayout() {
+const [isDark, setIsDark] = useState(false);
+    useEffect(() => {
+      if (isDark) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    }, [isDark]);
 
   return (
 
@@ -19,7 +31,7 @@ export default function CockpitLayout() {
       bg-slate-900/80
     "
   >
-    Header
+    <CockpitHeader isDark={isDark} onThemeToggle={() => setIsDark(!isDark)}/>
   </div>
 
   {/* Outer Cockpit Shell */}
@@ -36,7 +48,7 @@ export default function CockpitLayout() {
         flex-shrink-0
       "
     >
-      Nav Rail
+      <NavRail />
     </div>
 
     {/* Right Cockpit Content */}
@@ -64,6 +76,7 @@ export default function CockpitLayout() {
               p-4
               overflow-hidden
               h-full
+              min-h-0
             "
           >
           <DriverMonitor />
@@ -79,9 +92,10 @@ export default function CockpitLayout() {
               p-4
               overflow-hidden
               h-full
+              min-h-0
             "
           >
-          AI Center
+          <AICenter/>
         </div>
 
         {/* Right Side Stack */}
@@ -131,7 +145,7 @@ min-h-0
               p-4
             "
           >
-            AI Alerts
+            <AIAlerts/>
           </div>
 
         </div>
@@ -144,7 +158,7 @@ min-h-0
           grid
           grid-cols-[1.2fr_0.8fr]
           gap-4
-          h-[140px]
+          h-[120px]
           flex-shrink-0
         "
       >
