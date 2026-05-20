@@ -195,7 +195,7 @@ const renderCompactLayout = () => (
             <div className="flex gap-1">
               <button
                 onClick={onToggleCompact}
-                className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
+                className="p-1.5 hover:bg-slate-100 dark:hover:bg-transparent rounded-lg transition-colors"
                 title="Expand"
               >
                 <Maximize2 className="w-4 h-4 text-slate-600 dark:text-slate-400" />

@@ -1,5 +1,9 @@
 import DriverMonitor
 from "../app/components/DriverMonitor";
+import VehicleControls from "../app/components/VehicleControls";
+import VehicleMetrics from "../app/components/VehicleMetrics";
+import VehicleStatus from "../app/components/VehicleStatus";
+
 
 export default function CockpitLayout() {
 
@@ -53,61 +57,75 @@ export default function CockpitLayout() {
 
 
             <div
-  className="
-    rounded-[32px]
-    border border-slate-700
-    bg-slate-900/80
-    p-4
-    overflow-hidden
-    h-full
-  "
->
+            className="
+              rounded-[32px]
+              border border-slate-700
+              bg-slate-900/80
+              p-4
+              overflow-hidden
+              h-full
+            "
+          >
           <DriverMonitor />
         </div>
 
         {/* AI Center */}
         
             <div
-  className="
-    rounded-[32px]
-    border border-slate-700
-    bg-slate-900/80
-    p-4
-    overflow-hidden
-    h-full
-  "
->
+            className="
+              rounded-[32px]
+              border border-slate-700
+              bg-slate-900/80
+              p-4
+              overflow-hidden
+              h-full
+            "
+          >
           AI Center
         </div>
 
         {/* Right Side Stack */}
-            <div className="grid grid-rows-3 gap-4 h-full">
+            <div className="
+          grid
+          grid-rows-3
+          gap-4
+          h-full
+          min-h-0
+          ">
 
           <div
             className="
-              flex-1 rounded-2xl
+              
+              rounded-[28px]
+overflow-hidden
+min-h-0
               border border-slate-700
               bg-slate-900/80
               p-4
             "
           >
-            Vehicle Status
+          <VehicleStatus />
           </div>
 
           <div
             className="
-              flex-1 rounded-2xl
+              
+              rounded-[28px]
+overflow-hidden
+min-h-0
               border border-slate-700
               bg-slate-900/80
               p-4
             "
           >
-            Vehicle Metrics
+            <VehicleMetrics />
           </div>
 
           <div
             className="
-              flex-1 rounded-2xl
+              rounded-[28px]
+              overflow-hidden
+              min-h-0
               border border-slate-700
               bg-slate-900/80
               p-4
@@ -124,22 +142,21 @@ export default function CockpitLayout() {
       <div
         className="
           grid
-          grid-cols-[1.8fr_320px]
+          grid-cols-[1.2fr_0.8fr]
           gap-4
-          h-24
+          h-[140px]
           flex-shrink-0
         "
       >
 
         <div
           className="
-            rounded-2xl
+            rounded-xl
             border border-slate-700
             bg-slate-900/80
-            p-4
           "
         >
-          Vehicle Controls
+          <VehicleControls />
         </div>
 
         <div
@@ -147,7 +164,6 @@ export default function CockpitLayout() {
             rounded-[28px]
             border border-slate-700
             bg-slate-900/80
-            p-4
           "
         >
           AI Assistant
