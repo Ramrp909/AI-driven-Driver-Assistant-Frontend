@@ -59,110 +59,121 @@ export default function CarDashboard() {
   ];
 
   return (
-    <div className="w-full h-full flex flex-col">
+<div className="w-full h-full flex flex-col justify-center">
 
-      {/* Section Title */}
-      <h2
-        className="
-          text-[11px]
-          uppercase
-          tracking-[0.2em]
-          text-slate-400
-          mb-2
-        "
-      >
-        Vehicle Controls
-      </h2>
+  {/* Section Title */}
+  <h2
+    className="
+      text-[10px]
+      uppercase
+      tracking-[0.25em]
+      text-muted-foreground
+      mb-2
+    "
+  >
+    Vehicle Controls
+  </h2>
 
-      {/* Controls Dock */}
-      <div
-        className="
-          grid
-          grid-cols-8
-          gap-3
-          flex-1
-        "
-      >
-        {controls.map((control, idx) => {
-          const Icon = control.icon;
+  {/* Embedded Control Strip */}
+  <div
+    className="
+      flex
+      items-center
+      justify-between
+      flex-1
+      px-2
+    "
+  >
 
-          const isHighlighted =
-            control.isTemp;
+    {controls.map((control, idx) => {
 
-          const isDanger =
-            control.isDanger;
+      const Icon = control.icon;
 
-          const bgColor =
-            isDanger
-              ? "bg-red-500/15"
-              : isHighlighted
-              ? "bg-cyan-500/15"
-              : "bg-slate-200/70 dark:bg-slate-800/70";
+      const isHighlighted =
+        control.isTemp;
 
-          const borderColor =
-            isDanger
-              ? "border-red-400/60"
-              : isHighlighted
-              ? "border-cyan-400/60"
-              : "border-slate-300 dark:border-slate-700";
+      const isDanger =
+        control.isDanger;
 
-          const textColor =
-            isDanger
-              ? "text-red-300"
-              : isHighlighted
-              ? "text-cyan-300"
-              : "text-slate-900 dark:text-white";
+      return (
 
-          return (
-            <button
-              key={idx}
-              className={`
-                w-full
-                h-[72px]
-                rounded-[20px]
-                ${bgColor}
-                border
-                ${borderColor}
-                backdrop-blur-md
-                flex
-                flex-col
-                items-center
-                justify-evenly
-                gap-1
-                transition-all
-                hover:scale-[1.03]
-                active:scale-95
-                hover:border-cyan-400/60
-                hover:shadow-[0_0_20px_rgba(34,211,238,0.15)]
-                ${
-                  isHighlighted
-                    ? "shadow-[0_0_20px_rgba(34,211,238,0.25)]"
-                    : ""
-                }
-              `}
-            >
-              <Icon
-                className={`
-                  w-5 h-5
-                  ${textColor}
-                `}
-              />
+        <button
+          key={idx}
+          data-active={isHighlighted}
+          data-danger={isDanger}
+          className="
+            relative
 
-              <span
-                className={`
-                  text-[10px]
-                  tracking-wide
-                  uppercase
-                  font-medium
-                  ${textColor}
-                `}
-              >
-                {control.label}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
+            flex
+            flex-col
+            items-center
+            justify-center
+
+            gap-1
+
+            min-w-[52px]
+            h-full
+
+            transition-all
+            duration-300
+
+            text-muted-foreground
+
+            hover:text-foreground
+
+            data-[active=true]:text-blue-500
+            dark:data-[active=true]:text-emerald-400
+
+            data-[danger=true]:text-red-400
+          "
+        >
+
+          {/* Active Indicator */}
+          {isHighlighted && (
+
+            <div className="
+              absolute
+              top-0
+              left-1/2
+              -translate-x-1/2
+
+              w-6 h-[2px]
+
+              rounded-full
+
+              bg-blue-500
+              dark:bg-emerald-400
+            " />
+
+          )}
+
+          {/* Icon */}
+          <Icon
+            className="
+              w-4 h-4
+            "
+          />
+
+          {/* Label */}
+          <span
+            className="
+              text-[9px]
+              uppercase
+              tracking-wide
+              font-medium
+            "
+          >
+            {control.label}
+          </span>
+
+        </button>
+
+      );
+
+    })}
+
+  </div>
+
+</div>
   );
 }

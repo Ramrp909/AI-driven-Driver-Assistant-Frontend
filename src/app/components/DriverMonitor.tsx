@@ -6,9 +6,11 @@ import { useAI } from "../../context/AIContext";
 import NotificationSystem, { demoNotifications } from "./NotificationSystem";
 
 
-import { Camera, Eye, Target, Circle, Clock, Pin, Minimize2, Maximize2, X, AlertTriangle,  } from "lucide-react";
+import { Camera, Eye, Target, Circle, Clock, Pin, Minimize2, Maximize2, X, AlertTriangle,ChevronRight,ChevronLeft  } from "lucide-react";
 import useDriverMonitor from "../../hooks/useDriverMonitor";
 import MobileStatusPills from "./MobileStatusPills";
+import TelemetryPanel from "./TelemetryPanel";
+
 
 interface DriverMonitorProps {
   isCompact?: boolean;
@@ -29,6 +31,9 @@ const {
 } = useDriverMonitor();
 
 const [isMobile, setIsMobile] =
+  useState(false);
+
+  const [showTelemetry, setShowTelemetry] =
   useState(false);
 
 const colorClasses = {
@@ -268,12 +273,12 @@ const renderDesktopLayout = () => (
     
     <motion.section
       id="driver-monitor"
-      className="scroll-mt-20"
+      className="scroll-mt-20 relative overflow-visible"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.3 }}
     >
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-3 ">
         <h2 className=
         "text-sm font-semibold tracking-wide text-slate-300 uppercase">Driver Monitor</h2>
         {onToggleCompact && (
@@ -378,7 +383,8 @@ mb-3
         </div>
 
         {/* Status Cards Grid */}
-        {!isMobile && (
+        {/* {
+        !isMobile && (
         <div className="grid grid-cols-2 gap-2 mt-3">
           {statusCards.map((card, index) => {
             const Icon = card.icon;
@@ -405,7 +411,187 @@ mb-3
             );
           })}
         </div>
-        )}
+        )
+        } */}
+        {/* Telemetry Grid */}
+<div className="
+  grid
+  grid-cols-2
+  gap-2
+  mt-2
+">
+  
+
+  {statusCards.slice(0, 3).map((card) => {
+
+    const Icon = card.icon;
+
+    return (
+
+      <div
+        key={card.label}
+        className="
+          relative
+
+          flex
+          items-center
+          gap-2
+
+          px-3 py-2
+
+          rounded-2xl
+
+          bg-muted/20
+
+          border
+          border-border/40
+
+          backdrop-blur-sm
+
+          overflow-hidden
+        "
+      >
+
+        {/* Active Glow */}
+        <div className={`
+          absolute
+          left-0
+          top-0
+          bottom-0
+          w-[2px]
+
+          ${
+            card.color === "green"
+              ? "bg-green-400"
+              : card.color === "red"
+              ? "bg-red-400"
+              : card.color === "yellow"
+              ? "bg-yellow-400"
+              : "bg-blue-500 dark:bg-emerald-400"
+          }
+        `} />
+
+        {/* Icon */}
+        <Icon
+          className={`
+            w-4 h-4
+            flex-shrink-0
+
+            ${
+              card.color === "green"
+                ? "text-green-400"
+                : card.color === "red"
+                ? "text-red-400"
+                : card.color === "yellow"
+                ? "text-yellow-400"
+                : "text-blue-500 dark:text-emerald-400"
+            }
+          `}
+        />
+
+        {/* Content */}
+        <div className="
+          min-w-0
+          flex-1
+        ">
+
+          <div className="
+            text-[9px]
+            uppercase
+            tracking-wide
+            text-muted-foreground
+          ">
+            {card.label}
+          </div>
+
+          <div className="
+            text-xs
+            font-medium
+            text-foreground
+            truncate
+          ">
+            {card.value}
+          </div>
+
+        </div>
+
+      </div>
+
+    );
+
+  })}
+  {/* More Telemetry */}
+<button
+  onClick={() =>
+    setShowTelemetry(!showTelemetry)
+  }
+  className="
+    relative
+
+    flex
+    items-center
+    justify-between
+
+    px-3 py-2
+
+    rounded-2xl
+
+    bg-muted/20
+
+    border
+    border-border/40
+
+    overflow-hidden
+  "
+>
+
+  <div className="
+    absolute
+    left-0
+    top-0
+    bottom-0
+    w-[2px]
+
+    bg-blue-500
+    dark:bg-emerald-400
+  " />
+
+  <div className="
+    flex flex-col
+    items-start
+  ">
+
+    <span className="
+      text-[9px]
+      uppercase
+      tracking-wide
+
+      text-muted-foreground
+    ">
+      More
+    </span>
+
+    <span className="
+      text-xs
+      font-medium
+
+      text-foreground
+    ">
+      Diagnostics
+    </span>
+
+  </div>
+
+  <ChevronRight className="
+    w-4 h-4
+
+    text-blue-500
+    dark:text-emerald-400
+  " />
+
+</button>
+
+</div>
 
 {isMobile && (
   <MobileStatusPills
@@ -422,6 +608,12 @@ mb-3
     {isCompact
       ? renderCompactLayout()
       : renderDesktopLayout()}
+      <TelemetryPanel
+  open={showTelemetry}
+  onClose={() =>
+    setShowTelemetry(false)
+  }
+/>
     </>
   );
   

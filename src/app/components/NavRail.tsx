@@ -48,10 +48,10 @@ export default function NavRail() {
       py-4
     ">
 
-      {/* Top */}
+      {/* Top Icons */}
       <div className="
         flex flex-col
-        gap-3
+        gap-5
       ">
 
         {items.map((item, index) => {
@@ -62,57 +62,43 @@ export default function NavRail() {
 
             <button
               key={index}
-              className={`
+              data-active={item.active}
+              className="
                 relative
-                w-14 h-14
-                rounded-[22px]
+                w-10 h-10
                 flex items-center
                 justify-center
                 transition-all
                 duration-300
 
-                ${
-                  item.active
-                    ? `
-                      bg-cyan-500/20
-                      border border-cyan-400/40
-                      shadow-[0_0_25px_rgba(34,211,238,0.18)]
-                    `
-                    : `
-                      bg-slate-800/80
-                      border border-slate-700
-                      hover:border-cyan-400/30
-                    `
-                }
-              `}
+                text-muted-foreground
+
+                hover:text-foreground
+
+                data-[active=true]:text-blue-500
+                dark:data-[active=true]:text-emerald-400
+              "
             >
 
-              {/* Active Glow */}
+              {/* Active Side Indicator */}
               {item.active && (
 
                 <div className="
                   absolute
-                  left-0
+                  -left-4
                   top-1/2
                   -translate-y-1/2
-                  w-1 h-8
+                  w-1 h-6
                   rounded-full
-                  bg-cyan-400
+                  bg-blue-500
+                  dark:bg-emerald-400
                 " />
 
               )}
 
-              <Icon
-                className={`
-                  w-5 h-5
-
-                  ${
-                    item.active
-                      ? "text-cyan-300"
-                      : "text-slate-400"
-                  }
-                `}
-              />
+              <Icon className="
+                w-5 h-5
+              " />
 
             </button>
 
@@ -124,19 +110,14 @@ export default function NavRail() {
 
       {/* Bottom AI Core */}
       <div className="
-        w-14 h-14
-        rounded-[22px]
-        bg-gradient-to-br
-        from-cyan-500
-        to-blue-600
         flex items-center
         justify-center
-        shadow-[0_0_30px_rgba(34,211,238,0.3)]
       ">
 
         <Brain className="
           w-6 h-6
-          text-white
+          text-blue-500
+          dark:text-emerald-400
         " />
 
       </div>

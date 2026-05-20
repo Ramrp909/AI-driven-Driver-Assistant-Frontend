@@ -21,14 +21,16 @@ const [isDark, setIsDark] = useState(false);
 
   return (
 
-    <div className="min-h-screen p-4 overflow-hidden">
+    // <div className="min-h-screen p-4 overflow-hidden">
+      <div className="min-h-screen p-4 overflow-hidden bg-cover bg-center" 
+     style={{backgroundImage: 'url(your-image-url)'}}>
 
   {/* Header */}
   <div
     className="
       h-16 mb-4 rounded-2xl
-      border border-slate-700
-      bg-slate-900/80
+      border border-border
+      bg-background/80
     "
   >
     <CockpitHeader isDark={isDark} onThemeToggle={() => setIsDark(!isDark)}/>
@@ -42,8 +44,8 @@ const [isDark, setIsDark] = useState(false);
       className="
         w-[80px]
         rounded-2xl
-        border border-slate-700
-        bg-slate-900/80
+        border border-border
+        bg-background/80
         p-4
         flex-shrink-0
       "
@@ -52,7 +54,7 @@ const [isDark, setIsDark] = useState(false);
     </div>
 
     {/* Right Cockpit Content */}
-    <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+    <div className="flex-1 flex flex-col gap-4 overflow-visible">
 
       {/* Main Cockpit Grid */}
       <div
@@ -68,17 +70,30 @@ const [isDark, setIsDark] = useState(false);
         {/* Driver Monitor */}
 
 
-            <div
+            {/* <div
             className="
               rounded-[32px]
-              border border-slate-700
-              bg-slate-900/80
+              border border-border
+              bg-background/80
               p-4
               overflow-hidden
               h-full
               min-h-0
             "
-          >
+          > */}
+
+            <div
+  className="
+    relative
+    rounded-[32px]
+    border border-border
+    bg-background/80
+    p-4
+    overflow-visible
+    h-full
+    min-h-0
+  "
+>
           <DriverMonitor />
         </div>
 
@@ -87,8 +102,8 @@ const [isDark, setIsDark] = useState(false);
             <div
             className="
               rounded-[32px]
-              border border-slate-700
-              bg-slate-900/80
+              border border-border
+              bg-background/80
               p-4
               overflow-hidden
               h-full
@@ -113,8 +128,8 @@ const [isDark, setIsDark] = useState(false);
               rounded-[28px]
 overflow-hidden
 min-h-0
-              border border-slate-700
-              bg-slate-900/80
+              border border-border
+              bg-background/80
               p-4
             "
           >
@@ -127,8 +142,8 @@ min-h-0
               rounded-[28px]
 overflow-hidden
 min-h-0
-              border border-slate-700
-              bg-slate-900/80
+              border border-border
+              bg-background/80
               p-4
             "
           >
@@ -140,8 +155,8 @@ min-h-0
               rounded-[28px]
               overflow-hidden
               min-h-0
-              border border-slate-700
-              bg-slate-900/80
+              border border-border
+              bg-background/80
               p-4
             "
           >
@@ -166,8 +181,8 @@ min-h-0
         <div
           className="
             rounded-xl
-            border border-slate-700
-            bg-slate-900/80
+            border border-border
+            bg-background/80
           "
         >
           <VehicleControls />
@@ -176,8 +191,8 @@ min-h-0
         <div
           className="
             rounded-[28px]
-            border border-slate-700
-            bg-slate-900/80
+            border border-border
+            bg-background/80
           "
         >
           AI Assistant
