@@ -22,7 +22,8 @@ const [isDark, setIsDark] = useState(false);
   return (
 
     // <div className="min-h-screen p-4 overflow-hidden">
-      <div className="min-h-screen p-4 overflow-hidden bg-cover bg-center" 
+      <div className="h-screen
+overflow-hidden p-3 overflow-hidden bg-cover bg-center" 
      style={{backgroundImage: 'url(your-image-url)'}}>
 
   {/* Header */}
@@ -37,7 +38,7 @@ const [isDark, setIsDark] = useState(false);
   </div>
 
   {/* Outer Cockpit Shell */}
-    <div className="flex gap-4 h-[calc(100vh-72px)]">
+    <div className="flex gap-3 h-[calc(100vh-72px)]">
 
     {/* Full Height Navigation Rail */}
     <div
@@ -45,7 +46,14 @@ const [isDark, setIsDark] = useState(false);
         w-[80px]
         rounded-2xl
         border border-border
-        bg-background/80
+        bg-white/70
+dark:bg-[#12171D]
+
+border border-white/30
+dark:border-white/5
+
+shadow-[0_4px_20px_rgba(59,130,246,0.06)]
+dark:shadow-[0_8px_30px_rgba(16,185,129,0.06)]
         p-4
         flex-shrink-0
       "
@@ -69,25 +77,20 @@ const [isDark, setIsDark] = useState(false);
 
         {/* Driver Monitor */}
 
-
-            {/* <div
-            className="
-              rounded-[32px]
-              border border-border
-              bg-background/80
-              p-4
-              overflow-hidden
-              h-full
-              min-h-0
-            "
-          > */}
-
             <div
   className="
     relative
     rounded-[32px]
     border border-border
-    bg-background/80
+    
+bg-white/70
+dark:bg-[#12171D]
+
+border border-white/30
+dark:border-white/5
+
+shadow-[0_4px_20px_rgba(59,130,246,0.06)]
+dark:shadow-[0_8px_30px_rgba(16,185,129,0.06)]
     p-4
     overflow-visible
     h-full
@@ -103,7 +106,15 @@ const [isDark, setIsDark] = useState(false);
             className="
               rounded-[32px]
               border border-border
-              bg-background/80
+              
+              bg-white/70
+dark:bg-[#12171D]
+
+border border-white/30
+dark:border-white/5
+
+shadow-[0_4px_20px_rgba(59,130,246,0.06)]
+dark:shadow-[0_8px_30px_rgba(16,185,129,0.06)]
               p-4
               overflow-hidden
               h-full
@@ -129,8 +140,15 @@ const [isDark, setIsDark] = useState(false);
 overflow-hidden
 min-h-0
               border border-border
-              bg-background/80
-              p-4
+             bg-white/70
+dark:bg-[#12171D]
+
+border border-white/30
+dark:border-white/5
+
+shadow-[0_4px_20px_rgba(59,130,246,0.06)]
+dark:shadow-[0_8px_30px_rgba(16,185,129,0.06)]
+              p-3
             "
           >
           <VehicleStatus />
@@ -143,8 +161,15 @@ min-h-0
 overflow-hidden
 min-h-0
               border border-border
-              bg-background/80
-              p-4
+              bg-white/70
+dark:bg-[#12171D]
+
+border border-white/30
+dark:border-white/5
+
+shadow-[0_4px_20px_rgba(59,130,246,0.06)]
+dark:shadow-[0_8px_30px_rgba(16,185,129,0.06)]
+              p-3
             "
           >
             <VehicleMetrics />
@@ -156,8 +181,15 @@ min-h-0
               overflow-hidden
               min-h-0
               border border-border
-              bg-background/80
-              p-4
+             bg-white/70
+dark:bg-[#12171D]
+
+border border-white/30
+dark:border-white/5
+
+shadow-[0_4px_20px_rgba(59,130,246,0.06)]
+dark:shadow-[0_8px_30px_rgba(16,185,129,0.06)]
+              p-3
             "
           >
             <AIAlerts/>
@@ -173,7 +205,7 @@ min-h-0
           grid
           grid-cols-[1.2fr_0.8fr]
           gap-4
-          h-[120px]
+          h-[128px]
           flex-shrink-0
         "
       >
@@ -182,7 +214,14 @@ min-h-0
           className="
             rounded-xl
             border border-border
-            bg-background/80
+            bg-white/70
+dark:bg-[#12171D]
+
+border border-white/30
+dark:border-white/5
+
+shadow-[0_4px_20px_rgba(59,130,246,0.06)]
+dark:shadow-[0_8px_30px_rgba(16,185,129,0.06)]
           "
         >
           <VehicleControls />
@@ -192,7 +231,14 @@ min-h-0
           className="
             rounded-[28px]
             border border-border
-            bg-background/80
+            bg-white/70
+dark:bg-[#12171D]
+
+border border-white/30
+dark:border-white/5
+
+shadow-[0_4px_20px_rgba(59,130,246,0.06)]
+dark:shadow-[0_8px_30px_rgba(16,185,129,0.06)]
           "
         >
           AI Assistant

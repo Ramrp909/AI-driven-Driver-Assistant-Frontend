@@ -279,8 +279,8 @@ const renderDesktopLayout = () => (
       transition={{ duration: 0.6, delay: 0.3 }}
     >
       <div className="flex items-center justify-between mb-3 ">
-        <h2 className=
-        "text-sm font-semibold tracking-wide text-slate-300 uppercase">Driver Monitor</h2>
+        {/* <h2 className=
+        "text-sm font-semibold tracking-wide text-slate-300 uppercase">Driver Monitor</h2> */}
         {onToggleCompact && (
           <button
             onClick={onToggleCompact}
@@ -382,37 +382,8 @@ mb-3
           </div>
         </div>
 
-        {/* Status Cards Grid */}
-        {/* {
-        !isMobile && (
-        <div className="grid grid-cols-2 gap-2 mt-3">
-          {statusCards.map((card, index) => {
-            const Icon = card.icon;
-            return (
-              <motion.div
-                key={card.label}
-                className="p-2 bg-slate-100 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + index * 0.1 }}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <Icon className={`w-4 h-4 text-${card.color}-500`} />
-                  <span className="text-xs text-slate-600 dark:text-slate-400">
-                    {card.label}
-                  </span>
-                </div>
-                <p className={`text-lg font-semibold text-${card.color}-600 dark:${
-    colorClasses[card.color as keyof typeof colorClasses]
-  }`}>
-                  {card.value}
-                </p>
-              </motion.div>
-            );
-          })}
-        </div>
-        )
-        } */}
+        
+      
         {/* Telemetry Grid */}
 <div className="
   grid
