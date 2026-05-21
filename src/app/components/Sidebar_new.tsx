@@ -1,0 +1,156 @@
+import { LayoutDashboard, Eye, Sliders, AlertTriangle, Settings, Menu, X, Gauge } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { useState, useRef, useEffect } from "react";
+
+interface SidebarProps {
+  activeSection: string;
+  onSectionClick: (section: string) => void;
+}
+
+const menuItems = [
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { id: "driver-monitor", label: "Driver Monitor", icon: Eye },
+  { id: "vehicle-controls", label: "Vehicle Controls", icon: Sliders },
+  { id: "vehicle-metrics", label: "Vehicle Metrics", icon: Gauge },
+  { id: "alerts", label: "Alerts", icon: AlertTriangle },
+  { id: "settings", label: "Settings", icon: Settings },
+  { id: "ai-vision", label: "AI Vision Lab", icon: Eye },
+];
+
+export default function Sidebar({ activeSection, onSectionClick }: SidebarProps) {
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(0);
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // Handle keyboard navigation
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setFocusedIndex((prev) => (prev + 1) % menuItems.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setFocusedIndex((prev) => (prev - 1 + menuItems.length) % menuItems.length);
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const item = menuItems[focusedIndex];
+      onSectionClick(item.id);
+      setIsMobileOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    buttonRefs.current[focusedIndex]?.focus();
+  }, [focusedIndex]);
+
+  const SidebarContent = () => (
+    <nav className="flex flex-col gap-2 p-4" role="navigation">
+      {menuItems.map((item, index) => {
+        const Icon = item.icon;
+        const isActive = activeSection === item.id;
+
+        return (
+          <motion.button
+            key={item.id}
+            ref={(el) => {
+              buttonRefs.current[index] = el;
+            }}
+            onClick={() => {
+              onSectionClick(item.id);
+              setIsMobileOpen(false);
+              setFocusedIndex(index);
+            }}
+            onKeyDown={handleKeyDown}
+            whileHover={{ scale: 1.02, x: 4 }}
+            whileTap={{ scale: 0.98 }}
+            className={`
+              relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
+              focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:ring-offset-2 dark:focus:ring-offset-slate-900
+              ${
+                isActive
+                  ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30"
+                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80"
+              }
+            `}
+            aria-current={isActive ? "page" : undefined}
+            tabIndex={focusedIndex === index ? 0 : -1}
+          >
+            <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-white" : ""}`} strokeWidth={isActive ? 2.5 : 2} />
+            <span className="text-sm font-medium">{item.label}</span>
+            {isActive && (
+              <motion.div
+                layoutId="activeIndicator"
+                className="absolute right-3 w-2 h-2 bg-white rounded-full"
+                transition={{ type: "spring", stiffness: 200, damping: 30 }}
+              />
+            )}
+          </motion.button>
+        );
+      })}
+    </nav>
+  );
+
+  return (
+    <>
+      {/* Mobile Menu Button */}
+      <motion.button
+        onClick={() => setIsMobileOpen(!isMobileOpen)}
+        className="fixed top-20 left-4 z-50 lg:hidden p-3 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200/50 dark:border-slate-700/50 focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        aria-label={isMobileOpen ? "Close menu" : "Open menu"}
+        aria-expanded={isMobileOpen}
+      >
+        <motion.div
+          animate={{ rotate: isMobileOpen ? 90 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          {isMobileOpen ? (
+            <X className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+          ) : (
+            <Menu className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+          )}
+        </motion.div>
+      </motion.button>
+
+      {/* Desktop Sidebar */}
+      <motion.aside
+        className="hidden lg:block fixed left-0 top-20 h-[calc(100vh-5rem)] w-64 backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-r border-gray-200/50 dark:border-slate-700/50 shadow-[0_4px_20px_rgba(59,130,246,0.06)] dark:shadow-[0_8px_30px_rgba(16,185,129,0.06)] overflow-y-auto"
+        initial={{ x: -300 }}
+        animate={{ x: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <SidebarContent />
+      </motion.aside>
+
+      {/* Mobile Sidebar */}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileOpen(false)}
+            />
+
+            {/* Sidebar */}
+            <motion.aside
+              className="fixed left-0 top-0 bottom-0 z-50 w-64 backdrop-blur-xl bg-white/95 dark:bg-slate-900/95 shadow-2xl lg:hidden border-r border-gray-200/50 dark:border-slate-700/50"
+              initial={{ x: -300 }}
+              animate={{ x: 0 }}
+              exit={{ x: -300 }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            >
+              <div className="p-4 border-b border-gray-200/50 dark:border-slate-700/50">
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">Menu</h2>
+              </div>
+              <SidebarContent />
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
