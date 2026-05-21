@@ -44,54 +44,33 @@ export default function AIAlerts() {
     <div className="h-full flex flex-col">
 
       {/* Header */}
+     
       <div className="
-        flex items-center
-        justify-between
-        mb-3
-      ">
+  flex
+  items-center
+  gap-2
+">
 
-        <div
-        className="grid grid-cols-3">
+  <h2 className="
+    text-[10px]
+    uppercase
+    tracking-[0.25em]
 
-          <h2 className="
-            text-[11px]
-            uppercase
-            tracking-[0.2em]
-            text-slate-400
-            
-          ">
-            AI Alerts
-          </h2>
+    text-muted-foreground
+  ">
+    AI Alerts
+  </h2>
 
-          <p className="
-            text-[10px]
-            text-slate-500
-            
-          ">
-            Live Autonomous Feed
-          </p>
+  <span className="
+    text-[10px]
 
-        </div>
+    text-blue-500
+    dark:text-emerald-400
+  ">
+    Live Monitoring
+  </span>
 
-        {/* Active Pulse */}
-        <div className="
-          relative
-          w-3 h-3
-          rounded-full
-          bg-cyan-400
-        ">
-
-          <div className="
-            absolute inset-0
-            rounded-full
-            bg-cyan-400
-            animate-ping
-            opacity-50
-          " />
-
-        </div>
-
-      </div>
+</div>
 
       {/* Alerts Feed */}
       <div className="
@@ -207,6 +186,7 @@ h-full
         })}
 
       </div>
+      
 
     </div>
 
